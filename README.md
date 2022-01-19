@@ -1,2 +1,3 @@
 # team-rocket
-our rocket science github (readme to be updated)
+our rocket science github
+attempt to update the readme
