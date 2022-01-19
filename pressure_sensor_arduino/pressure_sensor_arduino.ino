@@ -5,18 +5,50 @@
  *
  * Tutorial page: https://arduinogetstarted.com/tutorials/arduino-force-sensor
  */
-
 #define FORCE_SENSOR_PIN A0 // the FSR and 10K pulldown are connected to A0
-
+#define pr(msg) Serial.print(msg)
 void setup() {
   Serial.begin(9600);
 }
 
 void loop() {
-  int analogReading = analogRead(FORCE_SENSOR_PIN);
+  float e = 2.693;
+  float analogReading = analogRead(FORCE_SENSOR_PIN);
 
   Serial.print("Force sensor reading = ");
   Serial.print(analogReading); // print the raw analog reading
+
+  float force_g = 30.096*(pow(e, (0.0032
+  *analogReading)));
+  Serial.print(" ///Approx. gram value = ");
+  Serial.print(force_g);
+
+  
+  float force_n = force_g/1000*9.8;
+  Serial.print(" ///approx. newton value = ");
+  Serial.print(force_n);
+  Serial.print("\n");
+
+/*
+
+  if (counter < 5)
+  {
+     avg_data += analogReading;
+     pr("\n");
+     pr(counter);
+     counter = counter + 1;
+     pr("\n\n yes here do stuff ");
+     pr(counter);
+     pr(" \n\n here done \n\n"); 
+  }
+  else
+  {
+    counter = 1;
+    Serial.print("\n average = ");
+    Serial.print(avg_data/5);
+    avg_data = analogReading;    
+  }
+  /*
 
   if (analogReading < 10)       // from 0 to 9
     Serial.println(" -> no pressure");
@@ -28,6 +60,7 @@ void loop() {
     Serial.println(" -> medium squeeze");
   else // from 800 to 1023
     Serial.println(" -> big squeeze");
+    */
 
   delay(1000);
 }
