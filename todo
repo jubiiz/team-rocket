@@ -1,0 +1,22 @@
+19 jan:
+  todo: ?
+  done: 
+    + all Arduinos work
+    + all githubs work
+    + pressure sensor appears functional. Basic calibration achieved
+    + data file created; basic engine specs logged (dimensions)
+    + environment sensor appears functional, credible readings
+    + brainstorm & first model of dry-fire engine socket
+    
+26 jan:
+  todo:
+    + plastic engine holder printed
+    + engine holder functional and stable (and SAFE)
+    + dry-fire engine to confirm thrust (should be ish 29N)
+    
+    + patched pressure sensor code (for multiple sensors at once)
+    + recalibrate pressure sensor for up to 29N
+    + figure out how to run arduino stuff from sd
+    + our own version of environmental sensor code (for altitude)
+  
+    
