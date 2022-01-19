@@ -1,0 +1,3 @@
+expected thrust 29 newton
+base diameter: 2.5cm
+sensor size: 1.75cm
