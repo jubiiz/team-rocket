@@ -21,11 +21,11 @@ void loop() {
   Serial.print(r0); // print the raw analog reading
   Serial.print(" voltage out: ");
   Serial.print((r0*5)/1000);
-  float exponent = ((1.489*r0*5)/1000);
+  float exponent = ((0.0055*r0*5)/1000);
   float base = 2.718;
   
     
-  double force_g = 6.7249*pow(base, exponent);
+  double force_g = 4.5267*pow(base, exponent);
   Serial.print(" ///Approx. gram value = ");
   Serial.print(force_g);
 
