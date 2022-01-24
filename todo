@@ -9,14 +9,22 @@
     + brainstorm & first model of dry-fire engine socket
     
 26 jan:
+  done: 
+    + patched pressure sensor code (for multiple sensors at once)
+    + manufactured little pads for the pressure sensors (gives consistent readings)
+    + our own version of environmental sensor code (for altitude)
+
+
   todo:
     + plastic engine holder printed
     + engine holder functional and stable (and SAFE)
     + dry-fire engine to confirm thrust (should be ish 29N)
-    
-    + patched pressure sensor code (for multiple sensors at once)
+    + test chute code: appropriate deployment + log
+
     + recalibrate pressure sensor for up to 29N
     + figure out how to run arduino stuff from sd
-    + our own version of environmental sensor code (for altitude)
+    + finalized, clean pressure sensor code
+    + loggable chute code (to verify deployment)
+
   
     
