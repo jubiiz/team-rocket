@@ -5,41 +5,58 @@
  *
  * Tutorial page: https://arduinogetstarted.com/tutorials/arduino-force-sensor
  */
-#include <SPI.h>
-#include <SD.h>
 #define FS0 A0 // the FSR and 10K pulldown are connected to A0
 #define FS1 A1 // connection to A1
 #define FS2 A2  //connection to A2
-#define pr(msg);  Serial.print(msg)
-int myvar;
+#include <SPI.h>
+#include <SD.h>
 void setup() {
   Serial.begin(9600);
-  int myvar = 4550;
+  while(!Serial){
+    ;
+  }
+
+  if(!SD.begin()){
+    Serial.println("sd failure ");
+    //while(1);
+  }
+  //file = SD.open("telemetry.txt", FILE_WRITE);
+  
+}
+ 
+
+double calculate_force(float r){
+  float exponent = ((1.489*r0*5)/1024);
+  float base = 2.718;
+  return(6.7249*pow(base, exponent))
 }
 
 void loop() {
   float r0 = analogRead(FS0);
   float r1 = analogRead(FS1);
-
-  Serial.println(myvar);
-
-  Serial.print("Force sensor reading = ");
-  Serial.print(r0); // print the raw analog reading
-  Serial.print(" voltage out: ");
-  Serial.print((r0*5)/1000);
-  float exponent = ((1.489*r0*5)/1000);
-  float base = 2.718;
+  float r2 = analogRead(FS2);
   
-    
-  double force_g = 6.7249*pow(base, exponent);
-  Serial.print(" ///Approx. gram value = ");
+  Serial.print("Sensor 1 = ");
+  Serial.print(r0); // print the raw analog reading      
+  double force_g = calculate_force(r0);
+  Serial.print("   Approx. gram value = ");
   Serial.print(force_g);
 
-  pr(" /// //// /// sensor 2: ")
-  pr(" reading 2: ")
-  pr(r1);
-  pr("\n");
-  Serial.println();
+  Serial.print("Sensor 2 = ");
+  Serial.print(r1); // print the raw analog reading  
+    
+  force_g = calculate_force(r1);
+  Serial.print("   Approx. gram value = ");
+  Serial.print(force_g);
+
+   Serial.print("Sensor 2 = ");
+  Serial.print(r0); // print the raw analog reading  
+    
+  double force_g = calculate_force(r2);
+  Serial.print("   Approx. gram value = ");
+  Serial.print(force_g);
+
+  delay(1000);
 
 /*
   
@@ -81,5 +98,5 @@ void loop() {
     Serial.println(" -> big squeeze");
     */
 
-  delay(1000);
-}
+
+  }

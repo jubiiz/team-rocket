@@ -17,7 +17,6 @@
 
 
   todo:
-    + plastic engine holder printed
     + triple pressure sensor settup built (where they each individually can measure pressure)
     + engine holder functional and stable (and SAFE)
     + dry-fire engine to confirm thrust (should be ish 29N)
