@@ -9,9 +9,23 @@
 #define pr(msg) Serial.print(msg)
 void setup() {
   Serial.begin(9600);
+
+  int counter = 0;
+  float avg_data = 0;
+  int *pcounter = &counter;
+  float *pavg_data = &avg_data;
+  
+  while(true){
+    update_pressure(pcounter, pavg_data);
+    delay(1000);
+  }
 }
 
-void loop() {
+void update_pressure(int *pcounter, float *pavg_data){
+  int counter = *pcounter;
+  float avg_data = *pavg_data;
+
+  float e = 2.693;
   float analogReading = analogRead(FORCE_SENSOR_PIN);
 
   Serial.print("Force sensor reading = ");
@@ -33,9 +47,7 @@ void loop() {
   Serial.print(" ///approx. newton value = ");
   Serial.print(force_n);
   Serial.print("\n");
-
-/*
-
+  
   if (counter < 5)
   {
      avg_data += analogReading;
@@ -53,19 +65,11 @@ void loop() {
     Serial.print(avg_data/5);
     avg_data = analogReading;    
   }
-  /*
+  *pcounter = counter;
+  *pavg_data = avg_data;
+  
+  
+}
 
-  if (analogReading < 10)       // from 0 to 9
-    Serial.println(" -> no pressure");
-  else if (analogReading < 200) // from 10 to 199
-    Serial.println(" -> light touch");
-  else if (analogReading < 500) // from 200 to 499
-    Serial.println(" -> light squeeze");
-  else if (analogReading < 800) // from 500 to 799
-    Serial.println(" -> medium squeeze");
-  else // from 800 to 1023
-    Serial.println(" -> big squeeze");
-    */
-
-  delay(1000);
+void loop() {
 }

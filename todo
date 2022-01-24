@@ -13,10 +13,12 @@
     + patched pressure sensor code (for multiple sensors at once)
     + manufactured little pads for the pressure sensors (gives consistent readings)
     + our own version of environmental sensor code (for altitude)
+    + computerless data logging
 
 
   todo:
     + plastic engine holder printed
+    + triple pressure sensor settup built (where they each individually can measure pressure)
     + engine holder functional and stable (and SAFE)
     + dry-fire engine to confirm thrust (should be ish 29N)
     + test chute code: appropriate deployment + log
