@@ -9,6 +9,7 @@
 #define pr(msg) Serial.print(msg)
 void setup() {
   Serial.begin(9600);
+  Serial.print("initiating ");
 }
 
 void loop() {
@@ -28,6 +29,7 @@ void loop() {
   Serial.print(" ///approx. newton value = ");
   Serial.print(force_n);
   Serial.print("\n");
+  delay(1000);
 
 /*
 
@@ -62,5 +64,5 @@ void loop() {
     Serial.println(" -> big squeeze");
     */
 
-  delay(1000);
+
 }
