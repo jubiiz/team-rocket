@@ -18,27 +18,23 @@ void setup() {
 }
 
 void loop() {
+  ///// reading organization: r0,g0,r1,g1,r2,g2
+  
   float r0 = analogRead(FS0);
   float r1 = analogRead(FS1);
+  float r2 = analogRead(FS2);
 
-  Serial.println(myvar);
 
   Serial.print("Force sensor reading = ");
   Serial.print(r0); // print the raw analog reading
-  Serial.print(" voltage out: ");
-  Serial.print((r0*5)/1000);
-  float exponent = ((1.489*r0*5)/1000);
-  float base = 2.718;
   
-    
-  double force_g = 6.7249*pow(base, exponent);
-  Serial.print(" ///Approx. gram value = ");
-  Serial.print(force_g);
-
   pr(" /// //// /// sensor 2: ")
   pr(" reading 2: ")
   pr(r1);
+  pr(" reading 3: ");
+  pr(r2);
   pr("\n");
+  
   Serial.println();
 
 /*

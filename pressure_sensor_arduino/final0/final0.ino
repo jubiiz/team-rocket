@@ -1,4 +1,4 @@
-/*
+ /*
  * Created by ArduinoGetStarted.com
  *
  * This example code is in the public domain
@@ -10,53 +10,80 @@
 #define FS2 A2  //connection to A2
 #include <SPI.h>
 #include <SD.h>
+File file;
 void setup() {
   Serial.begin(9600);
   while(!Serial){
     ;
   }
 
-  if(!SD.begin()){
+  if(!SD.begin(10)){
     Serial.println("sd failure ");
-    //while(1);
+    while(1);
   }
-  //file = SD.open("telemetry.txt", FILE_WRITE);
+  file = SD.open("telemetry.txt", FILE_WRITE);
+  if(file){
+    Serial.println("success file");
+  }
+  else{
+    Serial.println("file failure");
+    while(1);
+  }
+  int counter = 0;
+  while(counter<10){
+    float r0 = analogRead(FS0);
+    float r1 = analogRead(FS1);
+    float r2 = analogRead(FS2);
+    
+    Serial.print("Sensor 1 = ");
+    Serial.print(r0); // print the raw analog reading      
+    double force_g = calculate_force(r0);
+    Serial.print("   Approx. gram value = ");
+    Serial.print(force_g);
+    file.print(r0);
+    file.print(",");
+    file.print(force_g);
+    file.print(",");
+  
+    Serial.print("Sensor 2 = ");
+    Serial.print(r1); // print the raw analog reading     
+    force_g = calculate_force(r1);
+    Serial.print("   Approx. gram value = ");
+    Serial.print(force_g);
+     file.print(r1);
+    file.print(",");
+    file.print(force_g);
+    file.print(",");
+  
+    Serial.print("Sensor 2 = ");
+    Serial.print(r2); // print the raw analog reading      
+    force_g = calculate_force(r2);
+    Serial.print("   Approx. gram value = ");
+    Serial.println(force_g);
+    file.print(r2);
+    file.print(",");
+    file.print(force_g);
+    file.print(",");
+  
+    delay(1000);
+    
+    counter++;
+  }
+
+  file.close();
+  Serial.println("closed");
   
 }
  
 
 double calculate_force(float r){
-  float exponent = ((1.489*r0*5)/1024);
+  float exponent = ((1.489*r*5)/1024);
   float base = 2.718;
-  return(6.7249*pow(base, exponent))
+  return(6.7249*pow(base, exponent));
 }
 
 void loop() {
-  float r0 = analogRead(FS0);
-  float r1 = analogRead(FS1);
-  float r2 = analogRead(FS2);
-  
-  Serial.print("Sensor 1 = ");
-  Serial.print(r0); // print the raw analog reading      
-  double force_g = calculate_force(r0);
-  Serial.print("   Approx. gram value = ");
-  Serial.print(force_g);
 
-  Serial.print("Sensor 2 = ");
-  Serial.print(r1); // print the raw analog reading  
-    
-  force_g = calculate_force(r1);
-  Serial.print("   Approx. gram value = ");
-  Serial.print(force_g);
-
-   Serial.print("Sensor 2 = ");
-  Serial.print(r0); // print the raw analog reading  
-    
-  double force_g = calculate_force(r2);
-  Serial.print("   Approx. gram value = ");
-  Serial.print(force_g);
-
-  delay(1000);
 
 /*
   
