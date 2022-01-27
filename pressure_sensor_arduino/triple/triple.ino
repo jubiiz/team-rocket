@@ -5,16 +5,12 @@
  *
  * Tutorial page: https://arduinogetstarted.com/tutorials/arduino-force-sensor
  */
-#include <SPI.h>
-#include <SD.h>
 #define FS0 A0 // the FSR and 10K pulldown are connected to A0
 #define FS1 A1 // connection to A1
 #define FS2 A2  //connection to A2
 #define pr(msg);  Serial.print(msg)
-int myvar;
 void setup() {
   Serial.begin(9600);
-  int myvar = 4550;
 }
 
 void loop() {
@@ -28,6 +24,18 @@ void loop() {
   Serial.print("Force sensor reading = ");
   Serial.print(r0); // print the raw analog reading
   
+  Serial.print("Force sensor reading = ");
+  Serial.print(r0); // print the raw analog reading
+  Serial.print(" voltage out: ");
+  //Serial.print((r0*5)/1000);
+  float exponent = (0.009*r0);
+  float base = 2.718;
+  
+    
+  double force_g = 0.2119*pow(base, exponent);
+  Serial.print(" ///Approx. gram value = ");
+  Serial.print(force_g);
+
   pr(" /// //// /// sensor 2: ")
   pr(" reading 2: ")
   pr(r1);
