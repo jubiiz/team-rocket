@@ -20,7 +20,6 @@ void loop() {
   float r1 = analogRead(FS1);
   float r2 = analogRead(FS2);
 
-
   Serial.print("Force sensor reading = ");
   Serial.print(r0); // print the raw analog reading
   
