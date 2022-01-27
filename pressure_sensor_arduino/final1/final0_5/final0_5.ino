@@ -12,20 +12,20 @@
 #include <SD.h>
 File myfile;
 const int ledPin = 8;
+
  
 
 void setup() {
-  Serial.begin(9600);
   pinMode(ledPin, OUTPUT);
-
+  flash_warn();
 
   if(!SD.begin()){
-    Serial.println("sd failure ");
+
     while(1);
   }
   myfile = SD.open("tele.txt", FILE_WRITE);
   if(!myfile){
-    Serial.println(" file failure");
+
     while(1);
   }
   flash_warn();
@@ -36,32 +36,26 @@ void setup() {
     float r1 = analogRead(FS1);
     float r2 = analogRead(FS2);
     
-    Serial.print("Sensor 1 = ");
-    Serial.print(r0); // print the raw analog reading      
+   
     double force_g = calculate_force(r0);
-    Serial.print("   Approx. gram value = ");
-    Serial.print(force_g);
+
     myfile.print(r0);
     myfile.print(",");
     myfile.print(force_g);
     myfile.print(",");
     
   
-    Serial.print("Sensor 2 = ");
-    Serial.print(r1); // print the raw analog reading      
+  
     force_g = calculate_force(r1);
-    Serial.print("   Approx. gram value = ");
-    Serial.print(force_g);
+
     myfile.print(r1);
     myfile.print(",");
     myfile.print(force_g);
     myfile.print(",");
   
-     Serial.print("Sensor 3 = ");
-    Serial.print(r0); // print the raw analog reading      
+ 
     force_g = calculate_force(r2);
-    Serial.print("   Approx. gram value = ");
-    Serial.println(force_g);
+
     myfile.print(r2);
     myfile.print(",");
     myfile.println(force_g);
@@ -71,15 +65,15 @@ void setup() {
     counter++;
   }
   myfile.close();
-  Serial.print("closed");
+
   flash_warn();
 }
 
 void flash_warn(){
-  Serial.println("flash warn");
+
   for(int i=0; i<10; i++){
     digitalWrite(ledPin, HIGH);   // turn the LED on (HIGH is the voltage level)
-    Serial.print("boop");
+
     delay(500);                       // wait for a second
     digitalWrite(ledPin, LOW);    // turn the LED off by making the voltage LOW
     delay(500); 
