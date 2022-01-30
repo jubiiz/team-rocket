@@ -3,14 +3,20 @@ import numpy as np
 import math
 
 def num_to_force(num):
+    """
+    formula used to convert from the raw arduino output to a force in grams
+    """
     force = (math.e**(0.009*num))
     return(force)
 
 
 def main():
+    """
+    loads data from "fire_data", plots it
+    """
     rockets = [[[], [], []], [[], [], []], [[], [], []]] # a 3x3x3 list to put data for each sensor for each rocket size
-    #fake_weights = [[], [], []]
 
+    # load all data
     with open("fire_data.txt", "r") as r:
         rocket_size = -1  
         for line in r:
@@ -27,21 +33,18 @@ def main():
                             rockets[rocket_size][i//2].append(force_data)
                     except Exception as e:
                         pass
-                        #print(e.__class__)
-                
+
+    # plot the raw sensor data
     x = np.linspace(0, 2990, (300))
-
     fig, (small_ax, med_ax, big_ax) = plt.subplots(3)
-
     for i in range(3):
         small_ax.plot(x, rockets[0][i][:300])
-
     for i in range(3):
         med_ax.plot(x, rockets[1][i][:300])
     for i in range(3):
         big_ax.plot(x, rockets[2][i][:300])
 
-
+    # calculate and plot the force data
     forces = [[], [], []]
     for i in range(3):
         for j in range(3):
