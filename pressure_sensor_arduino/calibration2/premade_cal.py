@@ -1,7 +1,11 @@
-import tensorflow as tf
+#import tensorflow as tf
 import pandas as pd
 from matplotlib import pyplot as plt
 import numpy as np
+
+#######################
+## calibration from https://learn.adafruit.com/force-sensitive-resistor-fsr/using-an-fsr?fbclid=IwAR2HzFYEOMAhbUk6rGqZ-C22KE8T8YReQbQuDvUNlmbmpstJsAxHIiiBJzo
+######################
 
 def load_data(filename):
     """
@@ -59,49 +63,31 @@ def graph_data(labels, x_train):
     plt.legend(["sensor 1", "sensor 2", "sensor 3"])
     plt.show()
 
-def normalize_data(labels, x_train):
-    """
-    returns normalized lists of data (numbers between 0 and 1)
-    """
-    n_labels = []
-    n_x_train = []
 
-    l_denom = 2000
-    x_denom = 1023
+def calculate_force(readings):
+    forces = []
+    for reading in readings:
+        if reading ==0:
+            force = 0
+        else:
+            voltage = (reading*5000)/1023
+            resistance = ((5000-voltage)*10000)/voltage
+            conductance = 1000000/resistance
 
-    for label in labels:
-        n_labels.append(label/l_denom)
+            if(conductance <=1000):
+                force = conductance/80
+            else:
+                force = (conductance-1000)/30
+        forces.append(force)
 
-    for triplet in x_train:
-        n_triplet = []
-        for data in triplet:
-            n_triplet.append(data/x_denom)
-        n_x_train.append(n_triplet)
+    total = 0
+    for force in forces:
+        total += force
 
-    return(n_labels, n_x_train)
+    return(total/0.00981)
 
-def get_trained_model(x, y):
-    """
-    creates and trains a vanilla ANN to predict weight given 3 sensor input
-    """
 
-    model = tf.keras.models.Sequential()
-    model.add(tf.keras.layers.Flatten(input_shape=(3,)))
-    model.add(tf.keras.layers.Dropout(0.1, input_shape=(3,)))
-    model.add(tf.keras.layers.Dense(units =64))
-    model.add(tf.keras.layers.Dense(units =64))
-    model.add(tf.keras.layers.Dense(units=64))
-    model.add(tf.keras.layers.Dense(units=64))
-    model.add(tf.keras.layers.Dense(units=1, activation='relu'))
-
-    # compiler and optimizer hyperparameters from: https://stackoverflow.com/questions/44843581/what-is-the-difference-between-model-fit-an-model-evaluate-in-keras#:~:text=fit%20%28%29%20is%20for%20training%20the%20model%20with,loss%20value%20and%20metrics%20values%20for%20the%20model.
-    model.compile(loss="mse", optimizer="adam")
-    model.fit(x, y, epochs=300)
-    model.evaluate(x, y)  
-
-    return(model)
-
-def plot_fire_force(x_data, labels, model):
+def plot_fire_force(x_data, labels):
     """
     plotting function that also plots weight prediction
     """
@@ -112,16 +98,13 @@ def plot_fire_force(x_data, labels, model):
     if len(x_data[0]) < 300:
         numx = len(x_data[0])
         x = np.linspace(0, 3000, numx)
-        ax2.plot(x, labels)
+        ax2.plot(x, labels, label="labels")
     x = np.linspace(0, 3000, numx)
 
     # makes a list of predicted weights
-    _, n_x_data = normalize_data([], x_data)
     weights = []
-    sensor_values = []
     for i in range(len(x_data[0])):
-        sensor_values.append([x_data[0][i], x_data[1][i], x_data[2][i]])
-        weights.append((model.predict([[n_x_data[0][i], n_x_data[1][i], n_x_data[2][i]]]))[0][0]*2000)
+        weights.append(calculate_force([x_data[0][i], x_data[1][i], x_data[2][i]]))
 
     # plots the newly created data
     for i in range(3):
@@ -146,14 +129,8 @@ def main():
     filename = "cleaned_data.csv"
 
     labels, x_train = load_data(filename)
-    n_labels, n_x_train = normalize_data(labels, x_train)
 
     graph_data(labels, x_train)
-
-    model = get_trained_model(n_x_train, n_labels)
-    model.save("calibration2.h5")
-
-    model = tf.keras.models.load_model("calibration2.h5")
 
     r0, r1, r2 = load_fire_data()
 
@@ -165,13 +142,13 @@ def main():
            rs_x[i].append(triplet[i])
 
     # shows raw data and force estimation for the calibration data and rocket sizes 0 to 2 (small med big)
-    plot_fire_force(rs_x, labels, model)
+    plot_fire_force(rs_x, labels)
 
-    plot_fire_force(r0, labels, model)
+    plot_fire_force(r0, labels)
 
-    plot_fire_force(r1, labels, model)
+    plot_fire_force(r1, labels)
 
-    plot_fire_force(r2, labels, model)
+    plot_fire_force(r2, labels)
 
 
 
