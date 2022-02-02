@@ -1,6 +1,8 @@
 #import tensorflow as tf
 import pandas as pd
 from matplotlib import pyplot as plt
+import tensorflow_addons as tfa
+import math
 import numpy as np
 
 #######################
@@ -63,6 +65,11 @@ def graph_data(labels, x_train):
     plt.legend(["sensor 1", "sensor 2", "sensor 3"])
     plt.show()
 
+def homemade_force(readings):
+    force = 0
+    for reading in readings:
+        force += 2.5475*(math.e**(0.0065*reading))
+    return(force)
 
 def calculate_force(readings):
     forces = []
@@ -87,7 +94,7 @@ def calculate_force(readings):
     return(total/0.00981)
 
 
-def plot_fire_force(x_data, labels):
+def plot_fire_force(x_data, labels, name):
     """
     plotting function that also plots weight prediction
     """
@@ -97,9 +104,9 @@ def plot_fire_force(x_data, labels):
     # changes x axis parameters for calibration data only
     if len(x_data[0]) < 300:
         numx = len(x_data[0])
-        x = np.linspace(0, 3000, numx)
+        x = np.linspace(0, 300, numx)
         ax2.plot(x, labels, label="labels")
-    x = np.linspace(0, 3000, numx)
+    x = np.linspace(0, 300, numx)
 
     # makes a list of predicted weights
     weights = []
@@ -109,11 +116,22 @@ def plot_fire_force(x_data, labels):
     # plots the newly created data
     for i in range(3):
         ax1.plot(x, x_data[i][:300])
-        plt.legend([f"sensor {i}"])
     ax2.plot(x, weights[:300]) 
    
+        # r-squared for calibration data
+    if len(x_data[0]) < 300:
+        metric = tfa.metrics.r_square.RSquare()
+        metric.update_state(labels, weights)
+        r_s = float(metric.result())
+        r_s = round(r_s, 4)
+        plt.text(200, 600, f"R-squared value: {r_s}")
+
+    ax1.set_ylabel("Output ±50%")
+    ax1.set_title(name)
+    ax2.set_ylabel("Weight (g) ±0.1g")
+    ax2.set_xlabel("Number of Data Entries")
     plt.legend(["real weight", "estimated thrust"])
-    plt.title("estimated motor thrust (g) and sensor values over time (ms)")
+    plt.title("")
     plt.show()    
 
 
@@ -142,13 +160,13 @@ def main():
            rs_x[i].append(triplet[i])
 
     # shows raw data and force estimation for the calibration data and rocket sizes 0 to 2 (small med big)
-    plot_fire_force(rs_x, labels)
+    plot_fire_force(rs_x, labels, "")
 
-    plot_fire_force(r0, labels)
+    plot_fire_force(r0, labels, "A8-3")
 
-    plot_fire_force(r1, labels)
+    plot_fire_force(r1, labels, "D12-5")
 
-    plot_fire_force(r2, labels)
+    plot_fire_force(r2, labels, "E16-8")
 
 
 

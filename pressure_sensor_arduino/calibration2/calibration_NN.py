@@ -1,4 +1,5 @@
 import tensorflow as tf
+import tensorflow_addons as tfa
 import pandas as pd
 from matplotlib import pyplot as plt
 import numpy as np
@@ -88,20 +89,27 @@ def get_trained_model(x, y):
     model = tf.keras.models.Sequential()
     model.add(tf.keras.layers.Flatten(input_shape=(3,)))
     model.add(tf.keras.layers.Dropout(0.1, input_shape=(3,)))
-    model.add(tf.keras.layers.Dense(units =64))
-    model.add(tf.keras.layers.Dense(units =64))
-    model.add(tf.keras.layers.Dense(units=64))
-    model.add(tf.keras.layers.Dense(units=64))
-    model.add(tf.keras.layers.Dense(units=1, activation='relu'))
+    model.add(tf.keras.layers.Dense(units =32, activation='relu'))
+    model.add(tf.keras.layers.Dense(units =32))
+    model.add(tf.keras.layers.Dense(units=32))
+    model.add(tf.keras.layers.Dense(units=32))
+    model.add(tf.keras.layers.Dense(units=32))
+    model.add(tf.keras.layers.Dense(units=32))
+    model.add(tf.keras.layers.Dense(units=32))
+    model.add(tf.keras.layers.Dense(units=32))
+    model.add(tf.keras.layers.Dense(units=32))
+    model.add(tf.keras.layers.Dense(units=32))
+    model.add(tf.keras.layers.Dense(units=32))
 
-    # compiler and optimizer hyperparameters from: https://stackoverflow.com/questions/44843581/what-is-the-difference-between-model-fit-an-model-evaluate-in-keras#:~:text=fit%20%28%29%20is%20for%20training%20the%20model%20with,loss%20value%20and%20metrics%20values%20for%20the%20model.
+    model.add(tf.keras.layers.Dense(units=1))
+
     model.compile(loss="mse", optimizer="adam")
     model.fit(x, y, epochs=300)
     model.evaluate(x, y)  
 
     return(model)
 
-def plot_fire_force(x_data, labels, model):
+def plot_fire_force(x_data, labels, model, name):
     """
     plotting function that also plots weight prediction
     """
@@ -111,9 +119,9 @@ def plot_fire_force(x_data, labels, model):
     # changes x axis parameters for calibration data only
     if len(x_data[0]) < 300:
         numx = len(x_data[0])
-        x = np.linspace(0, 3000, numx)
+        x = np.linspace(0, 300, numx)
         ax2.plot(x, labels)
-    x = np.linspace(0, 3000, numx)
+    x = np.linspace(0, 300, numx)
 
     # makes a list of predicted weights
     _, n_x_data = normalize_data([], x_data)
@@ -126,11 +134,23 @@ def plot_fire_force(x_data, labels, model):
     # plots the newly created data
     for i in range(3):
         ax1.plot(x, x_data[i][:300])
-        plt.legend([f"sensor {i}"])
     ax2.plot(x, weights[:300]) 
+
+    # r-squared for calibration data
+    if len(x_data[0]) < 300:
+        metric = tfa.metrics.r_square.RSquare()
+        metric.update_state(labels, weights)
+        r_s = float(metric.result())
+        r_s = round(r_s, 4)
+        plt.text(200, 600, f"R-squared value: {r_s}")
    
+    ax1.set_ylabel("Output ±50%")
+    ax1.set_title(name)
+    ax2.set_ylabel("Weight (g) ±0.1g")
+
+    ax2.set_xlabel("Number of Data Entries")
     plt.legend(["real weight", "estimated thrust"])
-    plt.title("estimated motor thrust (g) and sensor values over time (ms)")
+    plt.title("")
     plt.show()    
 
 
@@ -150,10 +170,11 @@ def main():
 
     graph_data(labels, x_train)
 
-    model = get_trained_model(n_x_train, n_labels)
-    model.save("calibration2.h5")
+    name = "calibration4.h5"
+    #model = get_trained_model(n_x_train, n_labels)
+    #model.save(name)
 
-    model = tf.keras.models.load_model("calibration2.h5")
+    model = tf.keras.models.load_model(name)
 
     r0, r1, r2 = load_fire_data()
 
@@ -165,13 +186,13 @@ def main():
            rs_x[i].append(triplet[i])
 
     # shows raw data and force estimation for the calibration data and rocket sizes 0 to 2 (small med big)
-    plot_fire_force(rs_x, labels, model)
+    plot_fire_force(rs_x, labels, model, "")
 
-    plot_fire_force(r0, labels, model)
+    plot_fire_force(r0, labels, model, "A8-3")
 
-    plot_fire_force(r1, labels, model)
+    plot_fire_force(r1, labels, model, "D12-5")
 
-    plot_fire_force(r2, labels, model)
+    plot_fire_force(r2, labels, model, "E16-8")
 
 
 
