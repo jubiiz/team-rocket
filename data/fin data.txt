@@ -1,0 +1,9 @@
+trap (2;1;1): 
+	base: 16cm ±0.05cm
+	height (how far from the rocket:) 5.2cm
+	tip: 
+
+	holes: from bottom up: 3.1; 10.2
+		hole height (center-away): 1.9cm
+			
+	1cm up from base of rocket	

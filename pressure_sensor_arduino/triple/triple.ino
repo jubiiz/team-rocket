@@ -23,17 +23,6 @@ void loop() {
   Serial.print("Force sensor reading = ");
   Serial.print(r0); // print the raw analog reading
   
-  Serial.print("Force sensor reading = ");
-  Serial.print(r0); // print the raw analog reading
-  Serial.print(" voltage out: ");
-  //Serial.print((r0*5)/1000);
-  float exponent = (0.009*r0);
-  float base = 2.718;
-  
-    
-  double force_g = 0.2119*pow(base, exponent);
-  Serial.print(" ///Approx. gram value = ");
-  Serial.print(force_g);
 
   pr(" /// //// /// sensor 2: ")
   pr(" reading 2: ")
