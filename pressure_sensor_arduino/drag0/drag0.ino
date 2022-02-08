@@ -6,9 +6,10 @@
  * Tutorial page: https://arduinogetstarted.com/tutorials/arduino-force-sensor
  */
 const byte FS[] = {A0, A1, A2}; // the FSR and 10K pulldown are connected to A0;
-const int NUM_SENSORS = 3;
-const int FLIGHT_TIME = 7; // in seconds
+const int NUM_SENSORS = 1;
+const int FLIGHT_TIME = 3; // in seconds
 const int DELAY_TIME = 10;
+
 
 #define ledPin 3
 #include <SPI.h>
@@ -36,24 +37,18 @@ void setup() {
   
   int counter = 0;
   float r;
-  double w;
   file.println("------------NEW LOG-----------");
-  while(counter<((FLIGHT_TIME*1000)/DELAY_TIME)){
+  float t = millis();
+  while((millis()-t)/1000 < FLIGHT_TIME){
 
     for(int i=0; i<NUM_SENSORS; i++){
       //get data
       r = analogRead(FS[i]);
-      //transform to weight
-      w = calculate_force(r);
       //output data,weight,
       file.print(r);
       file.print(",");
-      file.print(w);
-      file.print(",");
 
       Serial.print(r);
-      Serial.print(",");
-      Serial.print(w);
       Serial.print(",");
     }
     file.print("\n");
@@ -65,7 +60,6 @@ void setup() {
 
   file.close();
   Serial.println("closed");
-  
   flash_warn();
   
 }
@@ -73,6 +67,7 @@ void setup() {
 void flash_warn(){
   for(int t=0; t<10; t++){
     digitalWrite(ledPin, HIGH);
+    Serial.println(10-t);
     delay(500);
     digitalWrite(ledPin, LOW);
     delay(500);
