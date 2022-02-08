@@ -37,6 +37,7 @@ void setup() {
   
   int counter = 0;
   float r;
+  double f;
   file.println("------------NEW LOG-----------");
   float t = millis();
   while((millis()-t)/1000 < FLIGHT_TIME){
@@ -44,12 +45,16 @@ void setup() {
     for(int i=0; i<NUM_SENSORS; i++){
       //get data
       r = analogRead(FS[i]);
+      f = calculate_force(r) *0.0098067;
       //output data,weight,
       file.print(r);
       file.print(",");
-
+      file.print(f);
+      //file.print(",");
+      
       Serial.print(r);
       Serial.print(",");
+      Serial.print(f);
     }
     file.print("\n");
     Serial.print("\n");
@@ -75,9 +80,9 @@ void flash_warn(){
 }
 
 double calculate_force(float r){
-  float exponent = ((1.489*r*5)/1024);
+  float exponent = (0.0065*r);
   float base = 2.718;
-  return(6.7249*pow(base, exponent));
+  return(2.5475*pow(base, exponent));
 }
 
 void loop() {
