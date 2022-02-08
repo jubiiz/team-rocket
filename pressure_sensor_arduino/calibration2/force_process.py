@@ -6,7 +6,7 @@ def num_to_force(num):
     """
     formula used to convert from the raw arduino output to a force in grams
     """
-    force = (math.e**(0.009*num))
+    force = 4.5267*(math.e**(0.0055*num))
     return(force)
 
 
@@ -35,14 +35,23 @@ def main():
                         pass
 
     # plot the raw sensor data
-    x = np.linspace(0, 2990, (300))
+    x = np.linspace(0, 300, (300))
     fig, (small_ax, med_ax, big_ax) = plt.subplots(3)
     for i in range(3):
         small_ax.plot(x, rockets[0][i][:300])
+    small_ax.set_title("A8-3 rocket")
+    small_ax.set_ylabel("Output ±50%")
+
     for i in range(3):
         med_ax.plot(x, rockets[1][i][:300])
+    med_ax.set_title("D12-5 rocket")
+    med_ax.set_ylabel("Output ±50%")
+
     for i in range(3):
         big_ax.plot(x, rockets[2][i][:300])
+    big_ax.set_title("E16-8 rocket")
+    plt.ylabel("Output ±50%")
+    plt.xlabel("Number of Data Entries")
 
     # calculate and plot the force data
     forces = [[], [], []]
@@ -56,10 +65,18 @@ def main():
     fig, (small_force, med_force, big_force) = plt.subplots(3)
 
     small_force.plot(x, forces[0][:300])
+    small_force.set_title("A8-3 rocket")
+    small_force.set_ylabel("Output ±50%")
 
     med_force.plot(x, forces[1][:300])
+    med_force.set_title("D12-5 rocket")
+    med_force.set_ylabel("Output ±50%")
 
     big_force.plot(x, forces[2][:300])
+    big_force.set_title("E16-8 rocket")
+    big_force.set_ylabel("Output ±50%")
+    big_force.set_xlabel("Number of Data Entries")
+
     plt.show()
 
 if __name__ == "__main__":
