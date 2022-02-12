@@ -1,3 +1,14 @@
+small:
+	diameter: 1.7cm
+	length: 6.9cm
+
+med:
 expected thrust 29 newton
 base diameter: 2.5cm
+length: 9.4cm
 sensor size: 1.75cm
+
+
+large: 
+	diameter: 2.9cm
+	length: 11.3cm
