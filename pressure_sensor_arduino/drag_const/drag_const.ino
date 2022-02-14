@@ -7,9 +7,9 @@
  */
 const byte FS[] = {A0, A1, A2}; // the FSR and 10K pulldown are connected to A0;
 const int NUM_SENSORS = 1;
-const int FLIGHT_TIME = 3; // in seconds
-const int DELAY_TIME = 10;
-const int FLASH_TIME = 10;
+const int FLIGHT_TIME = 1000; // in seconds
+const int DELAY_TIME = 500;
+const int FLASH_TIME = 3;
 
 
 #define ledPin 3
