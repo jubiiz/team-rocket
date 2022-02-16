@@ -5,11 +5,11 @@
 #include <Adafruit_BME280.h>
 
 //if you need to read altitude,you need to know the sea level pressure
-#define SEALEVELPRESSURE_HPA (1013.25)
+#define SEALEVELPRESSURE_HPA (1015.95)
 
 //This Macro definition decide whether you use I2C or SPI
 //When USEIIC is 1 means use I2C interface, When it is 0,use SPI interface
-#define USEIIC 0
+#define USEIIC 1
 
 /*
 This Demo is tested on UNO PLUS
