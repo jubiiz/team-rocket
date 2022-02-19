@@ -27,5 +27,11 @@
     + finalized, clean pressure sensor code
     + loggable chute code (to verify deployment)
 
+19 feb:
+    + chute deploy: check accelerometer (less than normal G everywhere?)
+    + legit deployChute() system (not just blinking led)
+    + figure out servo
+    + 
+
   
     
