@@ -1,0 +1,11 @@
+BME280:
+	address: 0x77 (default)
+		low voltage adress: 0x76
+
+MPU6050:
+	address: (ad0=0) 0x68 ; 1101000
+		(ad0=1) 0x69 ; 1101001
+
+CCS811: 
+	address (default) 0x5A
+		(or) 0x5B

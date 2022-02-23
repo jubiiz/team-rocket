@@ -1,10 +1,12 @@
 #include <Wire.h>
 #include <SPI.h>
+#include <Servo.h>
 
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BME280.h>
 #include <SD.h>
 File file;
+Servo myservo;
 
 //for faster prints
 #define pr(msg) Serial.print(msg)
@@ -78,6 +80,9 @@ void setup() {
         while(1);
       }
     }
+
+    myservo.attach(9);
+    
     deployChute(false);
 
     int counter = 0;
@@ -165,11 +170,11 @@ void deployChute(bool c){
       while(1);
     }
   }
-  for(int i=0; i<20; i++){
+  for(int i=0; i<10; i++){
       Serial.println("deploying ");
-      digitalWrite(LEDPIN, HIGH);   // turn the LED on (HIGH is the voltage level)
-      delay(100);                       // wait for a second
-      digitalWrite(LEDPIN, LOW);    // turn the LED off by making the voltage LOW
-      delay(100); 
+      myservo.write(0);   // turn the LED on (HIGH is the voltage level)
+      delay(500);                       // wait for a second
+      myservo.write(180);    // turn the LED off by making the voltage LOW
+      delay(500); 
   }
 }
