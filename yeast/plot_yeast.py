@@ -14,7 +14,7 @@ def main():
     for index, line in enumerate(df):
         print(axs)
         ax = axs[index%2][index%3]
-        ax.plot(list(range(11)), df[line])
+        ax.plot(list(range(143)), df[line])
         ax.set_title(line)
 
     plt.show()

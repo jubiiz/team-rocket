@@ -17,7 +17,6 @@ File file;
 
 //This Macro definition decide whether you use I2C or SPI
 //When USEIIC is 1 means use I2C interface, When it is 0,use SPI interface
-#define LEDPIN 2
 
 Adafruit_BME280 bme;
 Adafruit_CCS811 ccs;
@@ -26,7 +25,12 @@ Adafruit_CCS811 ccs;
 unsigned long delayTime = 5000;
 long initial_time = millis();
 
+
+
 void setup() {
+
+    pinMode(LED_BUILTIN, OUTPUT);
+
 
     Serial.begin(9600);
     bool rslt;
@@ -37,6 +41,7 @@ void setup() {
     }
   
     Serial.println("bme Init Success");
+    digitalWrite(LED_BUILTIN, HIGH);
 
     // using the ccs811 module
     if(!ccs.begin()){
@@ -47,7 +52,7 @@ void setup() {
     // Wait for the sensor to be ready
     while(!ccs.available());
     Serial.println("ccs settup, trying SD");
-
+    digitalWrite(LED_BUILTIN, LOW);
     
     if(true){
       if (!SD.begin(10)){
@@ -57,8 +62,6 @@ void setup() {
       file = SD.open("yeast.txt", FILE_WRITE);
       if(file){
         Serial.println("success file");
-        digitalWrite(LEDPIN, HIGH);
-        delay(2000);
         file.println("------------NEW READING------------");
       }
       else{
@@ -66,13 +69,21 @@ void setup() {
         while(1);
       }
     }
+    digitalWrite(LED_BUILTIN, HIGH);
 }
 
 void loop() {
-  if(millis()-initial_time > 60000){
+  if(millis()-initial_time > 720000){
     file.close();
+    pinMode(LED_BUILTIN, OUTPUT);
     Serial.print("serial closed");
-    while(1);
+    while(1){
+      Serial.println("done");
+      digitalWrite(LED_BUILTIN, HIGH);
+      delay(500);
+      digitalWrite(LED_BUILTIN, LOW);
+      delay(500);
+    }
   }
    if(ccs.available()){
     if(!ccs.readData()){
