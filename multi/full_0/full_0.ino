@@ -24,7 +24,7 @@ float *plast_alt;
 void setup() {
     Serial.begin(9600);
     pinMode(LEDPIN, OUTPUT); 
-    
+
     // start BME sensor
     bool rslt;
     rslt = bme.begin();  
