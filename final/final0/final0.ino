@@ -8,6 +8,9 @@
 #include <Adafruit_BME280.h>
 #include <Adafruit_CCS811.h>
 #include <Adafruit_MPU6050.h>
+#include <Servo.h>
+#include <SD.h>
+
 //---------need to include servo files----------------
 
 #define SEALEVELPRESSURE_HPA (1013.25)
@@ -18,6 +21,8 @@
 Adafruit_BME280 bme;
 Adafruit_CCS811 ccs;
 Adafruit_MPU6050 mpu;
+Servo myservo;
+File file;
 
 int clock_init; // this is the base clock reference for the program
 
@@ -63,6 +68,12 @@ void setup() {
     }
     Serial.println("MPU6050 Init success!");
 
+
+
+    // settup servo
+    
+  
+
     // init BME chute deploy variables  
     int counter = 0;
     float sum = 0;
@@ -84,6 +95,7 @@ void setup() {
 
 void pre_armed(){
   //TODO: WAIT LAUNCH COUNTDOWN TIMER, THEN ENTER FLY PHASE
+  
   
 }
 
