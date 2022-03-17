@@ -26,6 +26,10 @@
 void setup() {
   // initialize digital pin LED_BUILTIN as an output.
   pinMode(LED_BUILTIN, OUTPUT);
+  Serial.begin(9600);
+  while(!Serial);
+  delay(1000);
+  Serial.println("begun");
 }
 
 // the loop function runs over and over again forever
@@ -34,4 +38,13 @@ void loop() {
   delay(200);                       // wait for a second
   digitalWrite(LED_BUILTIN, LOW);    // turn the LED off by making the voltage LOW
   delay(200);                       // wait for a second
+}
+
+int main(){
+  setup();
+  Serial.println("mained");
+  while(1){
+    loop();
+  }
+  return 0;
 }

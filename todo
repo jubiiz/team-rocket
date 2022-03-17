@@ -33,5 +33,12 @@
     + figure out servo
     + 
 
+
+17 mars:
+    + spi works?
+    + i2c works?
+    + i2c and spi works?
+    + can I use other pwm pins to power stuff??
+    + env sensor on 3.3 volts on i2c?
   
     

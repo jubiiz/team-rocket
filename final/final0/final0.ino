@@ -34,7 +34,6 @@ float *plast_alt;
 
 // the z acceleration to check if peak is actually reached
 float z_accel;
-
 void setup() {
     // settup all sensors, modules, servo, files
     Serial.begin(9600);
@@ -68,10 +67,9 @@ void setup() {
     }
     Serial.println("MPU6050 Init success!");
 
-
-
     // settup servo
-    
+    myservo.attach(8);
+    myservo.write(0);
   
 
     // init BME chute deploy variables  
@@ -215,6 +213,14 @@ void update_altitude(int *pcounter, float *psum, float *plast_alt, float *pstart
 void deployChute() {
    //TODO: 
    // turn knob 90 degrees
+   myservo.write(90);
+   Serial.println("servo spun----------");
    // close file safely
+   file.close();
+   Serial.println("file closed-----------");
+   while(1){
+    Serial.println("awaiting dispatch");
+    delay(5000);
+   }
    //
 }
