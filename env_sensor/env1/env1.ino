@@ -104,6 +104,7 @@ void loop() {
 }
 
 void update_altitude(int *pcounter, float *psum, float *plast_alt, float *pstart_time) {
+    Serial.println("updating altitude");
     float altitude = bme.readAltitude(SEALEVELPRESSURE_HPA);
     if(millis()-*pstart_time >3000){ //if it's been more than 3 seconds
       // show the average value of the altitude over 1 sec
