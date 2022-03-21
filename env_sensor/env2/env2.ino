@@ -45,17 +45,16 @@ the default I2C address is 0x77, you can change it in Adafruit_BME280.h
 #endif
 
 unsigned long delayTime;
-int *pcounter;
-float *psum;
-float *pstart_time;
-float *plast_alt;
+int counter;
+float sum;
+float start_time;
+float last_alt;
+
+
 void setup() {
 
     Serial.begin(9600);
-    while(!Serial){
-      delay(10);
-    }
-    Serial.println("serial open");
+    Serial.println("program initiating");
     pinMode(LEDPIN, OUTPUT); 
     bool rslt;
     rslt = bme.begin();  
@@ -84,36 +83,37 @@ void setup() {
     }
     deployChute(false);
 
-    int counter = 0;
-    float sum = 0;
-    float start_time = millis();
-    float last_alt = bme.readAltitude(SEALEVELPRESSURE_HPA);
+    counter = 0;
+    sum = 0;
+    start_time = millis();
+    last_alt = bme.readAltitude(SEALEVELPRESSURE_HPA);
 
-    pcounter = &counter;
-    psum = &sum;
-    pstart_time = &start_time;
-    plast_alt = &last_alt;
-    *plast_alt = bme.readAltitude(SEALEVELPRESSURE_HPA);
-    
     //update_altitude(&counter, &sum, &last_alt, &start_time);
 }
 
 void loop() { 
-    update_altitude(pcounter, psum, plast_alt, pstart_time);
+    Serial.print("  loop counter: ");
+    Serial.println(counter);
+    update_altitude();
     delay(20);
 }
 
-void update_altitude(int *pcounter, float *psum, float *plast_alt, float *pstart_time) {
+void update_altitude() {
+    Serial.println("updating altitude");
     float altitude = bme.readAltitude(SEALEVELPRESSURE_HPA);
-    if(millis()-*pstart_time >3000){ //if it's been more than 3 seconds
+    Serial.print("altitude: ");
+    Serial.println(altitude);
+    if(millis()-start_time >3000){ //if it's been more than 3 seconds
       // show the average value of the altitude over 1 sec
       pr("counter: ");
-      prln(*pcounter);
-      float avg = *psum/(*pcounter);
+      prln(counter);
+      counter += 1;
+      Serial.println(counter);
+      float avg = sum/(counter);
       pr("current altitude average: ");
       pr(avg);
       pr(" diff with last: ");
-      float diff = avg-*plast_alt;
+      float diff = avg-last_alt;
       prln(diff);
 
       if(USE_SD){
@@ -132,19 +132,19 @@ void update_altitude(int *pcounter, float *psum, float *plast_alt, float *pstart
 
       //when all this is done, indicate what counter was at, update last_alt (=alt) reset counter, start_time, avg
       pr("previous counter number: ");
-      pr(*pcounter);
+      pr(counter);
       delay(2000);
 
-      *plast_alt = avg;
-      *pcounter = 1;
-      *pstart_time = millis();
-      *psum = 0;
+      last_alt = avg;
+      counter = 1;
+      start_time = millis();
+      sum = 0;
       
     }
 
     //update the altitude avg, then counter
-    *psum += altitude;
-    *pcounter += 1;
+    sum += altitude;
+    counter += 1;
 
 /*
     pr(" sum/counter, last avg, sum, counter");

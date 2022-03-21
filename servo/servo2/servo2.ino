@@ -1,10 +1,12 @@
 #include <Wire.h>
 #include <SPI.h>
+#include <Servo.h>
 
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BME280.h>
 #include <SD.h>
 File file;
+Servo myservo;
 
 //for faster prints
 #define pr(msg) Serial.print(msg)
@@ -14,10 +16,6 @@ File file;
 //if you need to read altitude,you need to know the sea level pressure
 #define SEALEVELPRESSURE_HPA (1013.25)
 
-//This Macro definition decide whether you use I2C or SPI
-//When USEIIC is 1 means use I2C interface, When it is 0,use SPI interface
-#define USEIIC 1
-#define LEDPIN 2
 
 
 /*
@@ -34,29 +32,17 @@ I2C_SDA:  A4
 the default I2C address is 0x77, you can change it in Adafruit_BME280.h
 */
 
-#if(USEIIC)
-  Adafruit_BME280 bme;
-#else
-  #define SPI_SCK 13
-  #define SPI_MISO 12
-  #define SPI_MOSI 11
-  #define SPI_CS 10
-  Adafruit_BME280 bme(SPI_CS, SPI_MOSI, SPI_MISO, SPI_SCK);
-#endif
+Adafruit_BME280 bme;
 
 unsigned long delayTime;
-int *pcounter;
-float *psum;
-float *pstart_time;
-float *plast_alt;
+int counter;
+float sum;
+float start_time;
+float last_alt;
 void setup() {
 
     Serial.begin(9600);
-    while(!Serial){
-      delay(10);
-    }
-    Serial.println("serial open");
-    pinMode(LEDPIN, OUTPUT); 
+    pinMode(LED_BUILTIN, OUTPUT); 
     bool rslt;
     rslt = bme.begin();  
     if (!rslt) {
@@ -73,7 +59,7 @@ void setup() {
       file = SD.open("pre.txt", FILE_WRITE);
       if(file){
         Serial.println("success file");
-        digitalWrite(LEDPIN, HIGH);
+        digitalWrite(LED_BUILTIN, HIGH);
         delay(2000);
         file.println("------------NEW READING------------");
       }
@@ -82,38 +68,35 @@ void setup() {
         while(1);
       }
     }
+
+    myservo.attach(8);
+    
     deployChute(false);
 
-    int counter = 0;
-    float sum = 0;
-    float start_time = millis();
-    float last_alt = bme.readAltitude(SEALEVELPRESSURE_HPA);
-
-    pcounter = &counter;
-    psum = &sum;
-    pstart_time = &start_time;
-    plast_alt = &last_alt;
-    *plast_alt = bme.readAltitude(SEALEVELPRESSURE_HPA);
+    counter = 0;
+    sum = 0;
+    start_time = millis();
+    last_alt = bme.readAltitude(SEALEVELPRESSURE_HPA);
     
     //update_altitude(&counter, &sum, &last_alt, &start_time);
 }
 
 void loop() { 
-    update_altitude(pcounter, psum, plast_alt, pstart_time);
+    update_altitude();
     delay(20);
 }
 
-void update_altitude(int *pcounter, float *psum, float *plast_alt, float *pstart_time) {
+void update_altitude() {
     float altitude = bme.readAltitude(SEALEVELPRESSURE_HPA);
-    if(millis()-*pstart_time >3000){ //if it's been more than 3 seconds
+    if(millis()-start_time >1000){ //if it's been more than 3 seconds
       // show the average value of the altitude over 1 sec
       pr("counter: ");
-      prln(*pcounter);
-      float avg = *psum/(*pcounter);
+      prln(counter);
+      float avg = sum/(counter);
       pr("current altitude average: ");
       pr(avg);
       pr(" diff with last: ");
-      float diff = avg-*plast_alt;
+      float diff = avg-last_alt;
       prln(diff);
 
       if(USE_SD){
@@ -132,19 +115,19 @@ void update_altitude(int *pcounter, float *psum, float *plast_alt, float *pstart
 
       //when all this is done, indicate what counter was at, update last_alt (=alt) reset counter, start_time, avg
       pr("previous counter number: ");
-      pr(*pcounter);
-      delay(2000);
+      pr(counter);
+      
 
-      *plast_alt = avg;
-      *pcounter = 1;
-      *pstart_time = millis();
-      *psum = 0;
+      last_alt = avg;
+      counter = 1;
+      start_time = millis();
+      sum = 0;
       
     }
 
     //update the altitude avg, then counter
-    *psum += altitude;
-    *pcounter += 1;
+    sum += altitude;
+    counter += 1;
 
 /*
     pr(" sum/counter, last avg, sum, counter");
@@ -165,15 +148,15 @@ void deployChute(bool c){
      if(c){
       file.close();
       Serial.print("closed");
-      digitalWrite(LEDPIN, HIGH);
+      digitalWrite(LED_BUILTIN, HIGH);
       while(1);
     }
   }
-  for(int i=0; i<20; i++){
+  for(int i=0; i<2; i++){
       Serial.println("deploying ");
-      digitalWrite(LEDPIN, HIGH);   // turn the LED on (HIGH is the voltage level)
-      delay(100);                       // wait for a second
-      digitalWrite(LEDPIN, LOW);    // turn the LED off by making the voltage LOW
-      delay(100); 
+      myservo.write(0);   // turn the LED on (HIGH is the voltage level)
+      delay(1000);                       // wait for a second
+      myservo.write(90);    // turn the LED off by making the voltage LOW
+      delay(1000); 
   }
 }
