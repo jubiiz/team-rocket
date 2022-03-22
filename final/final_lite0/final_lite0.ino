@@ -54,6 +54,10 @@ void setup() {
     // settup servo
     myservo.attach(8);
     myservo.write(0); // this is the only time the servo can be set at 0
+    delay(5000);
+    myservo.write(90);
+    delay(5000);
+    myservo.write(0);
   
 
     // init BME chute deploy variables  
