@@ -1,0 +1,7 @@
+- calibrate servo
+- 
+
+
+per-launch
+- calibrate servo?
+- MAKE SURE RIGHT VALUE IS ENTERED FOR SERVO ROTATION

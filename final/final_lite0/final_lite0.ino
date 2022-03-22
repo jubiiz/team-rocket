@@ -15,7 +15,7 @@
 
 #define SEALEVELPRESSURE_HPA (1013.25)
 #define CD_UPDATE_GAP 1000 // how often to check for info (flight telemetry)
-#define LAUNCH_COUNTDOWN 5000 // 5 SECONDS TO TEST-----------
+#define LAUNCH_COUNTDOWN 10000 // 5 SECONDS TO TEST-----------
 #define SAFEGUARD_TIMER 15000 // after 15 seconds of flight, the file automatically closes, regardless of the status of the parachute
 
 Adafruit_BME280 bme;
@@ -27,10 +27,10 @@ int clock_init; // this is the base clock reference for the program
 
 //setting up chute update
 int counter;
-int sum;
+float sum;
 unsigned int start_time;
-short int curr_alt;
-short int last_alt;
+float curr_alt;
+float last_alt;
 
 // the accelerations to check if peak is actually reached
 sensors_event_t a, g, t;
@@ -53,12 +53,7 @@ void setup() {
 
     // settup servo
     myservo.attach(8);
-    myservo.write(0); // this is the only time the servo can be set at 0
-    delay(5000);
-    myservo.write(90);
-    delay(5000);
-    myservo.write(0);
-  
+    myservo.write(60);
 
     // init BME chute deploy variables  
     counter = 0;
@@ -113,6 +108,8 @@ void log_data(){
 
 
   //log to file
+  file.print(start_time);
+  file.print(",");
   file.print(bme.readTemperature());
   file.print(",");
   file.print(bme.readPressure()/100.0F);
@@ -120,7 +117,7 @@ void log_data(){
   file.print(bme.readHumidity());
   file.print(",");
   curr_alt = bme.readAltitude(SEALEVELPRESSURE_HPA);
-  file.println(curr_alt);
+  file.print(curr_alt);
 
     /* Print out the values */
   file.print(",");
@@ -131,12 +128,11 @@ void log_data(){
   file.print(a.acceleration.z);
   file.print(",");
 
-  file.print("Rotation X: ");
   file.print(g.gyro.x);
   file.print(",");
   file.print(g.gyro.y);
   file.print(",");
-  file.print(g.gyro.z);
+  file.println(g.gyro.z);
   
 }
 
@@ -159,7 +155,7 @@ void update_altitude() {
     }
 
     //check if past the safeguard timer
-    if(millis()-(clock_init+LAUNCH_COUNTDOWN)>SAFEGUARD_TIMER){
+    if((millis()-(clock_init+LAUNCH_COUNTDOWN))>SAFEGUARD_TIMER){
       deployChute();
     }
     
@@ -171,7 +167,7 @@ void update_altitude() {
 void deployChute() {
    //TODO: 
    // turn knob 90 degrees
-   myservo.write(90);
+   myservo.write(150);
    // close file safely
    file.println("~");
    file.close();

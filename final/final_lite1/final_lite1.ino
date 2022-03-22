@@ -1,7 +1,7 @@
 // all sensors together. all basic required funcitonnality there
 // launch detection by timer LAUNCH_COUNTDOWN in MILLISECONDS (2 mins = 120000  ;   5 min = 300000   ;   10 min = 600000
 // peak detection by pressure + acceleration (acceleration less than 11m/s² on the z axis)
-// trying to add all the sensors
+// 72 % of board memory with current sketch
 
 #include <Wire.h>
 #include <SPI.h>
@@ -15,12 +15,13 @@
 //---------need to include servo files----------------
 
 #define SEALEVELPRESSURE_HPA (1013.25)
-#define CD_UPDATE_GAP 3000 // how often to check for info (flight telemetry)
+#define CD_UPDATE_GAP 1000 // how often to check for info (flight telemetry)
 #define LAUNCH_COUNTDOWN 5000 // 5 SECONDS TO TEST-----------
 #define SAFEGUARD_TIMER 15000 // after 15 seconds of flight, the file automatically closes, regardless of the status of the parachute
 
 Adafruit_BME280 bme;
 Adafruit_MPU6050 mpu;
+Adafruit_CCS811 ccs;
 Servo myservo;
 File file;
 
@@ -28,10 +29,10 @@ int clock_init; // this is the base clock reference for the program
 
 //setting up chute update
 int counter;
-int sum;
+float sum;
 unsigned int start_time;
-short int curr_alt;
-short int last_alt;
+float curr_alt;
+float last_alt;
 
 // the accelerations to check if peak is actually reached
 sensors_event_t a, g, t;
@@ -40,26 +41,23 @@ void setup() {
     clock_init = millis();
     
     // start BME sensor
-    bool rslt;
-    rslt = bme.begin();  
-    if (!rslt) {
-        while (1);
-    }  
-
-    rslt = ccs.begin();
-    if (!rslt) {
-      Serial.println(" CCS811 Init Fail,Please Check your address or the wire you connected!!!");
-      while(1);
-    }
+    bme.begin();     
     
     // start mpu6050 sensor
-    if (!mpu.begin()) {
-      while (1);
+    mpu.begin();
+
+    //start ccs811 sensor
+    ccs.begin();
+
+    //open file
+    SD.begin(10);
+    file = SD.open("pre.txt", FILE_WRITE);
+    if(file){
+      file.println("NR");
     }
 
     // settup servo
     myservo.attach(8);
-    myservo.write(0); // this is the only time the servo can be set at 0
   
 
     // init BME chute deploy variables  
@@ -115,6 +113,8 @@ void log_data(){
 
 
   //log to file
+  file.print(start_time);
+  file.print(",");
   file.print(bme.readTemperature());
   file.print(",");
   file.print(bme.readPressure()/100.0F);
@@ -133,23 +133,27 @@ void log_data(){
   file.print(a.acceleration.z);
   file.print(",");
 
-  file.print("Rotation X: ");
+  file.print(",");
   file.print(g.gyro.x);
   file.print(",");
   file.print(g.gyro.y);
   file.print(",");
   file.print(g.gyro.z);
-  
+  file.print(",");
+
+  file.print(ccs.geteCO2());
+  file.print(",");
+  file.print(ccs.getTVOC());
 }
 
 void update_altitude() {
     // altitude stored in curr_alt
-    if(millis()-start_time >CD_UPDATE_GAP){ //if it's been more than CD_UPDATE_GAP seconds
+    if(millis()-start_time >CD_UPDATE_GAP){ //if it's been more than CD_UPDATE_GAP milliseconds
       // show the average value of the altitude over 1 sec
       float avg = sum/(counter);
       float diff = avg-last_alt;
       // then, if there has been at least a meter of drop, deploy parachute
-      if(diff < -1){
+      if(diff < -1 && (-10)<a.acceleration.z){
         deployChute();
       }      
       //when all this is done, indicate what counter was at, update last_alt (=alt) reset counter, start_time, avg
@@ -173,7 +177,7 @@ void update_altitude() {
 void deployChute() {
    //TODO: 
    // turn knob 90 degrees
-   myservo.write(90);
+   myservo.write(150);
    // close file safely
    file.println("~");
    file.close();

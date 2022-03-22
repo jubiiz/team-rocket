@@ -40,5 +40,40 @@
     + i2c and spi works?
     + can I use other pwm pins to power stuff??
     + env sensor on 3.3 volts on i2c?
+    : works on small arduino with everything :))
+
+#######################################################################
+
+21 mars, todo for 22, launch on 23
+verifications:
+	X arduino works
+		blink with computer
+	O Solders and sensors work
+		X 9v psu
+			X blink on psu
+		X get env data from sd
+		X get mpu data from sd
+		X get sd to log files ok
+		O get chute code to deploy on pressure increase (bmeTest)
+		O ccs811 data obtainable
+		X servo spins desired amount with ok force
+	X test servo activation
+		repeatedly run code that sets it at x degrees, see if it comes back, maybe manual set for final
+	x timer code works
+		X pre-register timer average duration calculated
+			negligible
+		X pre-register timer works
+		x add timer log to sd in final_lite (0, 1)
+		x max time timer works
+		x logs at ish correct intervals
+		x are able to time "launch" with ±1 second (important for safeguard timer not to early deploy)
+		 
+
+
+Python visual telemetry interpretation (graphs and such)
+
+window 1: humidity, temp, pressure, alt
+window 2: all axels, all gyros
+window 3: co2 tvoc
   
     
