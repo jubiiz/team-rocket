@@ -15,7 +15,7 @@
 
 #define SEALEVELPRESSURE_HPA (1013.25)
 #define CD_UPDATE_GAP 1000 // how often to check for info (flight telemetry)
-#define LAUNCH_COUNTDOWN 10000 // 5 SECONDS TO TEST-----------
+#define LAUNCH_COUNTDOWN 60000 // 5 SECONDS TO TEST-----------
 #define SAFEGUARD_TIMER 15000 // after 15 seconds of flight, the file automatically closes, regardless of the status of the parachute
 
 Adafruit_BME280 bme;
@@ -23,12 +23,12 @@ Adafruit_MPU6050 mpu;
 Servo myservo;
 File file;
 
-int clock_init; // this is the base clock reference for the program
+float clock_init; // this is the base clock reference for the program
 
 //setting up chute update
-int counter;
+float counter;
 float sum;
-unsigned int start_time;
+float start_time;
 float curr_alt;
 float last_alt;
 
@@ -37,6 +37,8 @@ sensors_event_t a, g, t;
 void setup() {
     // settup all sensors, modules, servo, files
     clock_init = millis();
+    pinMode(LED_BUILTIN, OUTPUT);
+    digitalWrite(LED_BUILTIN, HIGH);
     
     // start BME sensor
     bme.begin();     
@@ -53,7 +55,7 @@ void setup() {
 
     // settup servo
     myservo.attach(8);
-    myservo.write(60);
+    myservo.write(100);
 
     // init BME chute deploy variables  
     counter = 0;
@@ -65,7 +67,7 @@ void setup() {
     mpu.setAccelerometerRange(MPU6050_RANGE_8_G);
     mpu.setGyroRange(MPU6050_RANGE_500_DEG);
     mpu.setFilterBandwidth(MPU6050_BAND_21_HZ);
-
+    digitalWrite(LED_BUILTIN, LOW);
     pre_armed();
 }
 
@@ -82,6 +84,7 @@ void pre_armed(){
 }
 
 void flight(){
+  digitalWrite(LED_BUILTIN, HIGH);
   //TODO : LOG DATA + CHECK FOR PEAK + CHECK FOR PAST SAFEGUARD TIMER
   // LOG DATA FIRST
   // THEN UPDATE ALTITUDE (CHECK PEAK FUNCTION)
@@ -108,7 +111,7 @@ void log_data(){
 
 
   //log to file
-  file.print(start_time);
+  file.print(millis());
   file.print(",");
   file.print(bme.readTemperature());
   file.print(",");
@@ -167,12 +170,14 @@ void update_altitude() {
 void deployChute() {
    //TODO: 
    // turn knob 90 degrees
-   myservo.write(150);
+   myservo.write(190);
+   myservo.write(190);
+   myservo.write(190);
    // close file safely
    file.println("~");
    file.close();
+   digitalWrite(LED_BUILTIN, LOW);
    while(1){
-    delay(5000);
    }
    //
 }

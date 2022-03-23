@@ -7,7 +7,7 @@ def load_data(filename):
     return(df)
 
 def main():
-    df = load_data("yeast.csv")
+    df = load_data("yeast0.csv")
 
     fig, axs = plt.subplots(2, 3)
 

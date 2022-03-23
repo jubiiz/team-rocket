@@ -1,4 +1,4 @@
-pressure,temp,hum,co2,tvoc
+pressure (hpa),temperature (deg C),humidity (%),co2 (ppm),tvoc (ppb)
 1019.62,22.84,57.19,400.00,0.00
 1019.66,22.71,58.12,400.00,0.00
 1019.70,22.60,58.99,400.00,0.00

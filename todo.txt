@@ -69,6 +69,7 @@ verifications:
 		x are able to time "launch" with ±1 second (important for safeguard timer not to early deploy)
 		 
 
+	O find a way to reliably get all the electronics packed back in the rocket (or fast after the press of the reset button)
 
 Python visual telemetry interpretation (graphs and such)
 

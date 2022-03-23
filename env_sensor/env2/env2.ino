@@ -9,7 +9,7 @@ File file;
 //for faster prints
 #define pr(msg) Serial.print(msg)
 #define prln(msg) Serial.println(msg)
-#define USE_SD false
+#define USE_SD true
 
 //if you need to read altitude,you need to know the sea level pressure
 #define SEALEVELPRESSURE_HPA (1013.25)
