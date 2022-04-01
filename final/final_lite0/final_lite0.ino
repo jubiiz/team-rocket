@@ -11,7 +11,6 @@
 #include <Servo.h>
 #include <SD.h>
 
-//---------need to include servo files----------------
 
 #define SEALEVELPRESSURE_HPA (1013.25)
 #define CD_UPDATE_GAP 1000 // how often to check for info (flight telemetry)
@@ -72,7 +71,7 @@ void setup() {
 }
 
 void pre_armed(){
-  //TODO: WAIT LAUNCH COUNTDOWN TIMER, THEN ENTER FLY PHASE
+  // WAIT LAUNCH COUNTDOWN TIMER, THEN ENTER FLY PHASE
   while(1){
     if(millis()-clock_init > LAUNCH_COUNTDOWN){
       // ENTER FLY PHASE
@@ -85,7 +84,6 @@ void pre_armed(){
 
 void flight(){
   digitalWrite(LED_BUILTIN, HIGH);
-  //TODO : LOG DATA + CHECK FOR PEAK + CHECK FOR PAST SAFEGUARD TIMER
   // LOG DATA FIRST
   // THEN UPDATE ALTITUDE (CHECK PEAK FUNCTION)
   // THEN CHECK FOR PAST SAFEGUARD TIMER (or as part of update alt?)
@@ -98,8 +96,6 @@ void flight(){
 }
 
 void log_data(){
-  //TODO
-  
   // order: 
   // altitude, pressure, temperature, humidity, x_a, y_a, z_a, x_g, y_g, z_g 
 
@@ -168,7 +164,6 @@ void update_altitude() {
 }
 
 void deployChute() {
-   //TODO: 
    // turn knob 90 degrees
    myservo.write(190);
    myservo.write(190);

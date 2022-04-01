@@ -3,7 +3,7 @@ import pandas as pd
 
 def load_data(filename):
     df = pd.read_csv(filename)
-    print(df.head())
+    print("head of the DataFrame:\n", df.head())
     return(df)
 
 def main():
