@@ -1,4 +1,4 @@
-# team-rocket program repository
+# Team Rocket program repository
 ## Our team's programs made and used in the context of our Rocket Science class
 
 In the scope of our _Case studies in Applied Sciences_ class (colloquially known as Rocket Science with our peers and teachers), we were tasked with building a rocket that would fly 9 weeks later. If possible, the rocket would carry an Arduino that would record data and deploy a parachute. 
